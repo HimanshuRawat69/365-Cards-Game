@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateRandomCode(): String {
-        val characters = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789"
+        val characters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz123456789"
         return (1..6)
             .map { characters.random() }
             .joinToString("")
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
     private fun createGameLobby(randomCode: String) {
         val Reference = gameReference.child(randomCode)
         val game = hashMapOf(
-            "Player1Joined" to false,
+            "Player1Joined" to true,
             "Player2Joined" to false,
             "Player3Joined" to false,
             "Player4Joined" to false

@@ -21,6 +21,21 @@ class Game_Actvity : AppCompatActivity() {
             val playerFragment1=Player1_Fragment()
             replaceFragment(playerFragment1)
         }
+        else if(playerNo==2)
+        {
+            val playerFragment2=Player2_Fragment()
+            replaceFragment(playerFragment2)
+        }
+        else if(playerNo==3)
+        {
+            val playerFragment3=Player3_Fragment()
+            replaceFragment(playerFragment3)
+        }
+        else if(playerNo==4)
+        {
+            val playerFragment4=Player4_Fragment()
+            replaceFragment(playerFragment4)
+        }
     }
 
     private fun replaceFragment(fragment: Fragment) {
