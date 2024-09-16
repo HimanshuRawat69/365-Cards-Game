@@ -107,7 +107,11 @@ class MainActivity : AppCompatActivity() {
             "Player1Joined" to true,
             "Player2Joined" to false,
             "Player3Joined" to false,
-            "Player4Joined" to false
+            "Player4Joined" to false,
+            "Player1Cards" to listOf<Int>(),
+            "Player2Cards" to listOf<Int>(),
+            "Player3Cards" to listOf<Int>(),
+            "Player4Cards" to listOf<Int>()
         )
 
         Reference.setValue(game)

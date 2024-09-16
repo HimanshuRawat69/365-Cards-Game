@@ -1,6 +1,7 @@
 package com.example.a365cards
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.google.firebase.database.ValueEventListener
 
 class Player2_Fragment : Fragment() {
     lateinit var gameReference: DatabaseReference
+    var checkAllJoined=0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,6 +36,22 @@ class Player2_Fragment : Fragment() {
         val p3=view.findViewById<ImageView>(R.id.imageView19)
         val p4=view.findViewById<ImageView>(R.id.imageView17)
         val p1=view.findViewById<ImageView>(R.id.imageView18)
+        val playView=view.findViewById<ImageView>(R.id.imageView20)
+        val imageViews= listOf(
+            view.findViewById<ImageView>(R.id.imageView7),
+            view.findViewById<ImageView>(R.id.imageView8),
+            view.findViewById<ImageView>(R.id.imageView6),
+            view.findViewById<ImageView>(R.id.imageView4),
+            view.findViewById<ImageView>(R.id.imageView5),
+            view.findViewById<ImageView>(R.id.imageView9),
+            view.findViewById<ImageView>(R.id.imageView10),
+            view.findViewById<ImageView>(R.id.imageView11),
+            view.findViewById<ImageView>(R.id.imageView12),
+            view.findViewById<ImageView>(R.id.imageView13),
+            view.findViewById<ImageView>(R.id.imageView14),
+            view.findViewById<ImageView>(R.id.imageView15),
+            view.findViewById<ImageView>(R.id.imageView16)
+        )
         fun showToast(message: String) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
@@ -54,6 +72,12 @@ class Player2_Fragment : Fragment() {
                     val value = dataSnapshot.getValue(Boolean::class.java)
                     if(value==true)
                     {
+                        checkAllJoined+=1
+                        if(checkAllJoined==3)
+                        {
+                            showToast("Click on Play Button!")
+                            playView.visibility=View.VISIBLE
+                        }
                         p3.setImageResource(R.drawable.blueboy)
                         showToast("Player 3 Joined")
                     }
@@ -74,6 +98,12 @@ class Player2_Fragment : Fragment() {
                     val value = dataSnapshot.getValue(Boolean::class.java)
                     if(value==true)
                     {
+                        checkAllJoined+=1
+                        if(checkAllJoined==3)
+                        {
+                            showToast("Click on Play Button!")
+                            playView.visibility=View.VISIBLE
+                        }
                         p4.setImageResource(R.drawable.redboy)
                         showToast("Player 4 Joined")
                     }
@@ -95,8 +125,13 @@ class Player2_Fragment : Fragment() {
                     val value = dataSnapshot.getValue(Boolean::class.java)
                     if(value==true)
                     {
+                        checkAllJoined+=1
+                        if(checkAllJoined==3)
+                        {
+                            showToast("Click on Play Button!")
+                            playView.visibility=View.VISIBLE
+                        }
                         p1.setImageResource(R.drawable.blueboy)
-                        showToast("Player 1 Joined")
                     }
                     else{
                         p1.setImageResource(R.drawable.blueboynotactive)
@@ -108,6 +143,24 @@ class Player2_Fragment : Fragment() {
                 println("Failed to read value: ${databaseError.toException()}")
             }
         })
+
+        playView.setOnClickListener{
+            playView.visibility=View.GONE
+            gameReference.child("Player2Cards").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val cardList = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                    //var j=0;
+                    for (i in imageViews.indices) {
+                        imageViews[i].setImageResource(myActivity?.imageResources!![cardList[i]])
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w("Firebase", "Failed to read value.", databaseError.toException())
+                }
+            })
+
+        }
 
         return view
     }

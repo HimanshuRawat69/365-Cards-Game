@@ -14,7 +14,7 @@
 
         <FrameLayout
             android:id="@+id/frameLayout"
-            android:layout_width="505dp"
+            android:layout_width="555dp"
             android:layout_height="110dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +107,7 @@
                 android:layout_width="70dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="360dp"
+                android:layout_marginStart="380dp"
                 android:src="@drawable/c12" />
 
             <ImageView
@@ -115,7 +115,7 @@
                 android:layout_width="70dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="395dp"
+                android:layout_marginStart="425dp"
                 android:src="@drawable/c13" />
 
             <ImageView
@@ -123,7 +123,7 @@
                 android:layout_width="70dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="430dp"
+                android:layout_marginStart="465dp"
                 android:src="@drawable/c14" />
         </FrameLayout>
 
@@ -289,7 +289,19 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/frameLayout" />
-
+        <ImageView
+            android:id="@+id/imageView20"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/play"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/imageView19"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.943"
+            app:layout_constraintStart_toEndOf="@+id/imageView17"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.04000002" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
