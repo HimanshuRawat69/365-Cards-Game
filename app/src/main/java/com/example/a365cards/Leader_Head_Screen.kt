@@ -53,6 +53,8 @@ class Leader_Head_Screen : DialogFragment() {
                 dialog.dismiss()
             }
 
+        this.isCancelable = false
+
         return builder.create()
     }
 

@@ -188,10 +188,11 @@ class Player1_Fragment : Fragment() {
     private fun randomCardNumber():List<List<Int>>
     {
         val numbers = (0..51).toList().shuffled()
-        val group1 = numbers.subList(0, 13)
-        val group2 = numbers.subList(13, 26)
-        val group3 = numbers.subList(26, 39)
-        val group4 = numbers.subList(39, 52)
+        val group1 = numbers.subList(0, 13).sorted()
+        val group2 = numbers.subList(13, 26).sorted()
+        val group3 = numbers.subList(26, 39).sorted()
+        val group4 = numbers.subList(39, 52).sorted()
+
 
         return listOf(group1, group2, group3, group4)
     }
