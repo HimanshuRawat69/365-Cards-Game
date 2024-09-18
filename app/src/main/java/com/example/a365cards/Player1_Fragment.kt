@@ -179,6 +179,7 @@ class Player1_Fragment : Fragment() {
                         Log.w("Firebase", "Failed to read value.", databaseError.toException())
                     }
                 })
+            Leader_Head_Screen().show(childFragmentManager, "inputDialog")
 
         }
 

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 
 class Game_Actvity : AppCompatActivity() {
     var gameId=""
+    var playerNo=0
     val imageResources = listOf(
         R.drawable.c2, R.drawable.c3, R.drawable.c4, R.drawable.c5, R.drawable.c6, R.drawable.c7, R.drawable.c8,
         R.drawable.c9, R.drawable.c10, R.drawable.c11, R.drawable.c12, R.drawable.c13,R.drawable.c14,
@@ -24,7 +25,7 @@ class Game_Actvity : AppCompatActivity() {
             View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         setContentView(R.layout.activity_game_actvity)
         gameId= intent.getStringExtra("GAMEID").toString()
-        var playerNo=intent.getIntExtra("PlayerNo",0)
+        playerNo=intent.getIntExtra("PlayerNo",0)
 
 
         if(playerNo==1)
