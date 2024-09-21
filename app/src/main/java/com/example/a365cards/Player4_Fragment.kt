@@ -148,7 +148,7 @@ class Player4_Fragment : Fragment() {
 
         playView.setOnClickListener{
             playView.visibility=View.GONE
-            gameReference.child("Player2Cards").addValueEventListener(object : ValueEventListener {
+            gameReference.child("Player4Cards").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val cardList = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
                     //var j=0;
@@ -161,6 +161,7 @@ class Player4_Fragment : Fragment() {
                     Log.w("Firebase", "Failed to read value.", databaseError.toException())
                 }
             })
+            Leader_Head_Screen().show(childFragmentManager, "inputDialog")
 
         }
 

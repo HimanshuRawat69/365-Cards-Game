@@ -173,7 +173,7 @@
                 android:id="@+id/imageView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/c12" />
+                android:src="@drawable/drophere" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -190,7 +190,7 @@
                 android:id="@+id/imageView23"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/c12" />
+                android:src="@drawable/drophere" />
 
 
         </androidx.cardview.widget.CardView>
@@ -209,7 +209,7 @@
                 android:id="@+id/imageView24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/c12" />
+                android:src="@drawable/drophere" />
 
         </androidx.cardview.widget.CardView>
 
@@ -227,7 +227,7 @@
                 android:id="@+id/imageView25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/c12" />
+                android:src="@drawable/drophere" />
         </androidx.cardview.widget.CardView>
 
         <TextView

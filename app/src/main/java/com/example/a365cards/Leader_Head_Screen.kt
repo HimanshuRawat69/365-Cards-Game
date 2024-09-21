@@ -3,10 +3,9 @@ package com.example.a365cards
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -22,6 +21,7 @@ class Leader_Head_Screen : DialogFragment() {
     lateinit var gameReference: DatabaseReference
     var playerNum=0
     var player=""
+    private lateinit var closeButton: Button
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
@@ -30,6 +30,7 @@ class Leader_Head_Screen : DialogFragment() {
         val inputField: EditText = view.findViewById(R.id.inputField)
         val submitButton: Button = view.findViewById(R.id.submitButton)
         val retrievedValueText: TextView = view.findViewById(R.id.retrievedValueText)
+        closeButton=view.findViewById<Button>(R.id.closeButton)
 
         val myActivity = activity as? Game_Actvity
         val gameid=myActivity?.gameId
@@ -37,25 +38,55 @@ class Leader_Head_Screen : DialogFragment() {
         gameReference = FirebaseDatabase.getInstance().reference.child("games").child(gameid!!)
 
         submitButton.setOnClickListener {
-            val input = inputField.text.toString().toInt()
+            val inputText = inputField.text.toString()
+            if (inputText.isNotEmpty()) {
+                val input = inputText.toInt()
 
-            if (input in 1..13) {
-                storeInputInFirebase(input)
-            } else {
-                Toast.makeText(requireContext(), "Please enter a number between 1 and 13", Toast.LENGTH_SHORT).show()
+                if (input in 1..13) {
+                    storeInputInFirebase(input)
+                    closeButton.visibility = View.VISIBLE
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Please enter a number between 1 and 13",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            else {
+                Toast.makeText(requireContext(), "Input field cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
 
         retrieveLastInput(retrievedValueText)
 
         builder.setView(view)
-            .setPositiveButton("Close") { dialog, _ ->
-                dialog.dismiss()
-            }
+        closeButton.visibility = View.GONE
+
+        closeButton.setOnClickListener {
+            dismiss()
+        }
 
         this.isCancelable = false
 
         return builder.create()
+    }
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.let { window ->
+            val params: WindowManager.LayoutParams = window.attributes
+            params.gravity = Gravity.TOP
+            params.y = 5
+            window.attributes = params
+            val scale = resources.displayMetrics.density
+            val dialogWidth = (300 * scale + 0.5f).toInt()
+            val dialogHeight = (250 * scale + 0.5f).toInt()
+
+            window.setLayout(
+                dialogWidth,
+                dialogHeight
+            )
+        }
     }
 
     private fun storeInputInFirebase(input: Int) {
@@ -78,12 +109,15 @@ class Leader_Head_Screen : DialogFragment() {
                         val value = dataSnapshot.getValue(Int::class.java)
                         if (value != null && value>0) {
                             retrievedValueText.text = "Player3 Head: $value"
-
-
+                            closeButton.visibility = View.VISIBLE
                         }
                         else{
-                            retrievedValueText.text = "Calculating!!"
+                            retrievedValueText.text = "Player3 Head: Calculating!!"
                         }
+
+                    }
+                    else{
+                        retrievedValueText.text = "Player3 Head: Calculating!!"
                     }
                 }
 
@@ -100,10 +134,62 @@ class Leader_Head_Screen : DialogFragment() {
                         val value = dataSnapshot.getValue(Int::class.java)
                         if (value != null && value>0) {
                             retrievedValueText.text = "Player4 Head: $value"
+                            closeButton.visibility = View.VISIBLE
                         }
                         else{
-                            retrievedValueText.text = "Calculating!!"
+                            retrievedValueText.text = "Player4 Head: Calculating!!"
                         }
+                    }
+                    else{
+                        retrievedValueText.text = "Player4 Head: Calculating!!"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+        else if(playerNum==3)
+        {
+            gameReference.child("Player1 Head").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        val value = dataSnapshot.getValue(Int::class.java)
+                        if (value != null && value>0) {
+                            retrievedValueText.text = "Player1 Head: $value"
+                            closeButton.visibility = View.VISIBLE
+                        }
+                        else{
+                            retrievedValueText.text = "Player1 Head: Calculating!!"
+                        }
+                    }
+                    else{
+                        retrievedValueText.text = "Player1 Head: Calculating!!"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+        else if(playerNum==4)
+        {
+            gameReference.child("Player2 Head").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        val value = dataSnapshot.getValue(Int::class.java)
+                        if (value != null && value>0) {
+                            retrievedValueText.text = "Player2 Head: $value"
+                            closeButton.visibility = View.VISIBLE
+                        }
+                        else{
+                            retrievedValueText.text = "Player2 Head: Calculating!!"
+                        }
+                    }
+                    else{
+                        retrievedValueText.text = "Player2 Head: Calculating!!"
                     }
                 }
 
