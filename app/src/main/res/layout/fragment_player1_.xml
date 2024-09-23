@@ -15,115 +15,127 @@
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="515dp"
-            android:layout_height="110dp"
+            android:layout_height="130dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.96">
+            app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
             <ImageView
                 android:id="@+id/imageView7"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView8"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="45dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView6"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="80dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="115dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView5"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="150dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView9"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="185dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView10"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="220dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView11"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="255dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView12"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="290dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView13"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="325dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView14"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="360dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView15"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="395dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
                 android:id="@+id/imageView16"
-                android:layout_width="70dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="430dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
         </FrameLayout>
 

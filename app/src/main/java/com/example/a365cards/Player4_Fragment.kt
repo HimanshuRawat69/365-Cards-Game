@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener
 class Player4_Fragment : Fragment() {
     lateinit var gameReference: DatabaseReference
     var checkAllJoined=0
+    private var selectedCard: ImageView? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,6 +53,9 @@ class Player4_Fragment : Fragment() {
             view.findViewById<ImageView>(R.id.imageView15),
             view.findViewById<ImageView>(R.id.imageView16)
         )
+        val blueTeamScoreView=view.findViewById<TextView>(R.id.textView6)
+        val redTeamScoreView=view.findViewById<TextView>(R.id.textView7)
+
         fun showToast(message: String) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
@@ -165,6 +169,57 @@ class Player4_Fragment : Fragment() {
 
         }
 
+        gameReference.child("Player1 Team Head").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(Int::class.java)
+                if(value!=null)
+                {
+                    blueTeamScoreView.text="Blue: 0/$value"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        gameReference.child("Player2 Team Head").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(Int::class.java)
+                if(value!=null)
+                {
+                    redTeamScoreView.text="Blue: 0/$value"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        imageViews.forEach { card ->
+            card.setOnClickListener {
+                onCardClick(card)
+            }
+        }
+
         return view
+    }
+
+    private fun onCardClick(card: ImageView) {
+        // If the clicked card is already selected, just return (no change)
+        if (selectedCard == card) {
+            return
+        }
+
+        // Reset the scale of the previously selected card, if any
+        selectedCard?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(200)?.start()
+        selectedCard?.setBackgroundResource(0)  // Remove background from previously selected card
+
+        // Set the new selected card and apply the zoom effect
+        selectedCard = card
+        card.setBackgroundResource(R.drawable.player_selected)  // Apply the selected background
+
+        // Apply the zoom effect (scale up the card)
+        card.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start()  // Zoom in to 120% of its size
     }
 }

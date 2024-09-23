@@ -21,6 +21,9 @@ import com.google.firebase.database.ValueEventListener
 class Player1_Fragment : Fragment() {
     lateinit var gameReference: DatabaseReference
     var checkAllJoined=0
+    var cardList= listOf<Int>()
+    private var selectedCard: ImageView? = null
+    var cardIndex=-1;
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +58,9 @@ class Player1_Fragment : Fragment() {
         view.findViewById<ImageView>(R.id.imageView16)
         )
         val playView=view.findViewById<ImageView>(R.id.imageView20)
+        val blueTeamScoreView=view.findViewById<TextView>(R.id.textView6)
+        val redTeamScoreView=view.findViewById<TextView>(R.id.textView7)
+
 
         fun showToast(message: String) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
@@ -175,7 +181,7 @@ class Player1_Fragment : Fragment() {
 
             gameReference.child("Player1Cards").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val cardList = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                        cardList = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
                         //var j=0;
                         for (i in imageViews.indices) {
                             imageViews[i].setImageResource(myActivity?.imageResources!![cardList[i]])
@@ -189,6 +195,39 @@ class Player1_Fragment : Fragment() {
             Final_Head_Player1and2_Screen().show(childFragmentManager, "inputDialog")
             Leader_Head_Screen().show(childFragmentManager, "inputDialog")
 
+        }
+
+        gameReference.child("Player1 Team Head").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if(value!=null)
+                    {
+                        blueTeamScoreView.text="Blue: 0/$value"
+                    }
+                }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        gameReference.child("Player2 Team Head").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(Int::class.java)
+                if(value!=null)
+                {
+                    redTeamScoreView.text="Red: 0/$value"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        imageViews.forEach { card ->
+            card.setOnClickListener {
+                onCardClick(card)
+                cardIndex = imageViews.indexOf(card)
+            }
         }
 
         return view
@@ -205,7 +244,37 @@ class Player1_Fragment : Fragment() {
         return listOf(group1, group2, group3, group4)
     }
 
+    private fun onCardClick(card: ImageView) {
+        // If the clicked card is already selected, just return (no change)
+        if (selectedCard == card) {
+            return
+        }
 
+        // Reset the scale of the previously selected card, if any
+        selectedCard?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(200)?.start()
+        selectedCard?.setBackgroundResource(0)  // Remove background from previously selected card
+
+        // Set the new selected card and apply the zoom effect
+        selectedCard = card
+        card.setBackgroundResource(R.drawable.player_selected)  // Apply the selected background
+
+        // Apply the zoom effect (scale up the card)
+        card.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start()  // Zoom in to 120% of its size
+    }
+
+//    private fun onCardClick(card: ImageView) {
+//        // If the clicked card is already selected, just return (no change)
+//        if (selectedCard == card) {
+//            return
+//        }
+//
+//        // Remove background from the previously selected card, if any
+//        selectedCard?.setBackgroundResource(0)
+//
+//        // Set the new selected card and update its background
+//        selectedCard = card
+//        card.setBackgroundResource(R.drawable.player_selected)  // Change to the selected background
+//    }
 
 
 }
