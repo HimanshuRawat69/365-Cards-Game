@@ -111,7 +111,12 @@ class MainActivity : AppCompatActivity() {
             "Player1Cards" to listOf<Int>(),
             "Player2Cards" to listOf<Int>(),
             "Player3Cards" to listOf<Int>(),
-            "Player4Cards" to listOf<Int>()
+            "Player4Cards" to listOf<Int>(),
+            "Player1 Card Index" to -1,
+            "Player2 Card Index" to -1,
+            "Player3 Card Index" to -1,
+            "Player4 Card Index" to -1,
+            "Player Turn" to 1
         )
 
         Reference.setValue(game)

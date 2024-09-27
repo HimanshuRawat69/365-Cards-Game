@@ -1,5 +1,8 @@
 package com.example.a365cards
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -8,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -21,9 +25,23 @@ import com.google.firebase.database.ValueEventListener
 class Player1_Fragment : Fragment() {
     lateinit var gameReference: DatabaseReference
     var checkAllJoined=0
-    var cardList= listOf<Int>()
+    var cardListIndexP1= listOf<Int>()
+    var cardListIndexP2= listOf<Int>()
+    var cardListIndexP3= listOf<Int>()
+    var cardListIndexP4= listOf<Int>()
+    var imageViews= listOf<ImageView>()
     private var selectedCard: ImageView? = null
     var cardIndex=-1;
+    var dropCardViewP1: ImageView? = null
+    var dropCardViewP2: ImageView? = null
+    var dropCardViewP3: ImageView? = null
+    var dropCardViewP4: ImageView? = null
+    var myActivity: Game_Actvity? =null
+    var p2: ImageView? = null
+    var p3: ImageView? = null
+    var p4: ImageView? = null
+    var turnofPlayer=0;
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,10 +57,10 @@ class Player1_Fragment : Fragment() {
 
         val view=inflater.inflate(R.layout.fragment_player1_, container, false)
 
-        val p2=view.findViewById<ImageView>(R.id.imageView19)
-        val p3=view.findViewById<ImageView>(R.id.imageView17)
-        val p4=view.findViewById<ImageView>(R.id.imageView18)
-        val imageViews= listOf(
+        p2=view.findViewById<ImageView>(R.id.imageView19)
+        p3=view.findViewById<ImageView>(R.id.imageView17)
+        p4=view.findViewById<ImageView>(R.id.imageView18)
+        imageViews= listOf(
         view.findViewById<ImageView>(R.id.imageView7),
         view.findViewById<ImageView>(R.id.imageView8),
         view.findViewById<ImageView>(R.id.imageView6),
@@ -60,6 +78,11 @@ class Player1_Fragment : Fragment() {
         val playView=view.findViewById<ImageView>(R.id.imageView20)
         val blueTeamScoreView=view.findViewById<TextView>(R.id.textView6)
         val redTeamScoreView=view.findViewById<TextView>(R.id.textView7)
+        val dropBtn=view.findViewById<Button>(R.id.btn_3d)
+        dropCardViewP1=view.findViewById<ImageView>(R.id.imageView25)
+        dropCardViewP2=view.findViewById<ImageView>(R.id.imageView23)
+        dropCardViewP3=view.findViewById<ImageView>(R.id.imageView24)
+        dropCardViewP4=view.findViewById<ImageView>(R.id.imageView22)
 
 
         fun showToast(message: String) {
@@ -67,7 +90,8 @@ class Player1_Fragment : Fragment() {
         }
 
 
-        val myActivity = activity as? Game_Actvity
+
+        myActivity = activity as? Game_Actvity
         val gameid=myActivity?.gameId
         showToast("Game lobby created with code: $gameid")
         val gameIdView=view.findViewById<TextView>(R.id.textView5)
@@ -93,11 +117,11 @@ class Player1_Fragment : Fragment() {
                             showToast("Click on Play Button!")
                             playView.visibility=View.VISIBLE
                         }
-                        p2.setImageResource(R.drawable.redboy)
+                        p2?.setImageResource(R.drawable.redboy)
                         showToast("Player 2 Joined")
                     }
                     else{
-                        p2.setImageResource(R.drawable.redboynotactive)
+                        p2?.setImageResource(R.drawable.redboynotactive)
                     }
                 }
             }
@@ -125,11 +149,11 @@ class Player1_Fragment : Fragment() {
                             showToast("Click on Play Button!")
                             playView.visibility=View.VISIBLE
                         }
-                        p3.setImageResource(R.drawable.blueboy)
+                        p3?.setImageResource(R.drawable.blueboy)
                         showToast("Player 3 Joined")
                     }
                     else{
-                        p3.setImageResource(R.drawable.blueboynotactive)
+                        p3?.setImageResource(R.drawable.blueboynotactive)
                     }
                 }
             }
@@ -159,11 +183,11 @@ class Player1_Fragment : Fragment() {
                             playView.visibility=View.VISIBLE
 
                         }
-                        p4.setImageResource(R.drawable.redboy)
+                        p4?.setImageResource(R.drawable.redboy)
                         showToast("Player 4 Joined")
                     }
                     else{
-                        p4.setImageResource(R.drawable.redboynotactive)
+                        p4?.setImageResource(R.drawable.redboynotactive)
                     }
                 }
             }
@@ -181,10 +205,10 @@ class Player1_Fragment : Fragment() {
 
             gameReference.child("Player1Cards").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        cardList = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                        cardListIndexP1 = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
                         //var j=0;
                         for (i in imageViews.indices) {
-                            imageViews[i].setImageResource(myActivity?.imageResources!![cardList[i]])
+                            imageViews[i].setImageResource(myActivity?.imageResources!![cardListIndexP1[i]])
                         }
                     }
 
@@ -194,6 +218,39 @@ class Player1_Fragment : Fragment() {
                 })
             Final_Head_Player1and2_Screen().show(childFragmentManager, "inputDialog")
             Leader_Head_Screen().show(childFragmentManager, "inputDialog")
+
+            gameReference.child("Player2Cards").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    cardListIndexP2 =
+                        dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+            gameReference.child("Player3Cards").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    cardListIndexP3 =
+                        dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+            gameReference.child("Player4Cards").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    cardListIndexP4 =
+                        dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+            turnofPlayer=1;
+
 
         }
 
@@ -230,6 +287,73 @@ class Player1_Fragment : Fragment() {
             }
         }
 
+        dropBtn.setOnClickListener {
+            if(turnofPlayer==1) {
+                onDropBtnClick()
+                turnofPlayer++
+                glowAvatar(p2!!)
+            }
+            else if(turnofPlayer==0)
+            {
+                Toast.makeText(requireContext(),"Game Not Start Yet!",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(requireContext(),"Not your turn!",Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        gameReference.child("Player2 Card Index").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(Int::class.java)
+                if(value!=-1)
+                {
+                    dropCardViewP2?.setImageResource(myActivity?.imageResources!![cardListIndexP2[value!!]] )
+                }
+                if(turnofPlayer!=0) {
+                    glowAvatar(p3!!)
+                    turnofPlayer++
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        gameReference.child("Player3 Card Index").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(Int::class.java)
+                if(value!=-1)
+                {
+                    dropCardViewP3?.setImageResource(myActivity?.imageResources!![cardListIndexP3[value!!]] )
+                }
+                if(turnofPlayer!=0) {
+                    glowAvatar(p4!!)
+                    turnofPlayer++
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        gameReference.child("Player4 Card Index").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.getValue(Int::class.java)
+                if(value!=-1)
+                {
+                    dropCardViewP4?.setImageResource(myActivity?.imageResources!![cardListIndexP4[value!!]] )
+                }
+                if(turnofPlayer!=0) {
+                    resetGlow(p4!!)
+                    turnofPlayer = 1
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
         return view
     }
     private fun randomCardNumber():List<List<Int>>
@@ -245,21 +369,34 @@ class Player1_Fragment : Fragment() {
     }
 
     private fun onCardClick(card: ImageView) {
-        // If the clicked card is already selected, just return (no change)
         if (selectedCard == card) {
             return
         }
 
-        // Reset the scale of the previously selected card, if any
         selectedCard?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(200)?.start()
-        selectedCard?.setBackgroundResource(0)  // Remove background from previously selected card
+        selectedCard?.setBackgroundResource(0)
 
-        // Set the new selected card and apply the zoom effect
         selectedCard = card
-        card.setBackgroundResource(R.drawable.player_selected)  // Apply the selected background
+        card.setBackgroundResource(R.drawable.player_selected)
 
-        // Apply the zoom effect (scale up the card)
-        card.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start()  // Zoom in to 120% of its size
+        card.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start()
+    }
+    private fun onDropBtnClick()
+    {
+        if (selectedCard != null) {
+
+            selectedCard!!.setImageDrawable(null)
+            selectedCard!!.setBackgroundResource(0)
+
+            gameReference.child("Player1 Card Index").setValue(cardIndex)
+
+            dropCardViewP1?.setImageResource(myActivity?.imageResources!![cardListIndexP1[cardIndex]] )
+
+            cardIndex=-1
+            selectedCard = null
+        } else {
+            Toast.makeText(requireContext(), "Please select a card first", Toast.LENGTH_SHORT).show()
+        }
     }
 
 //    private fun onCardClick(card: ImageView) {
@@ -275,6 +412,22 @@ class Player1_Fragment : Fragment() {
 //        selectedCard = card
 //        card.setBackgroundResource(R.drawable.player_selected)  // Change to the selected background
 //    }
+
+
+    private fun glowAvatar(avatar: ImageView) {
+        // Reset the glow effect from all avatars
+        resetGlow(p2!!)
+        resetGlow(p3!!)
+        resetGlow(p4!!)
+
+        // Set glow effect as a background
+        avatar.setBackgroundResource(R.drawable.glow_effect)
+    }
+
+    // Function to remove glow effect
+    private fun resetGlow(avatar: ImageView) {
+        avatar.setBackgroundResource(0) // Removes background
+    }
 
 
 }

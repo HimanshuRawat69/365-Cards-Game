@@ -28,6 +28,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -36,6 +37,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="45dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -44,6 +46,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="80dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -52,6 +55,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="115dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -60,6 +64,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="150dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -68,6 +73,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="185dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -76,6 +82,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="220dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -84,6 +91,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="255dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -92,6 +100,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="290dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -100,6 +109,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="325dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -108,6 +118,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="360dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -116,6 +127,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="395dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
 
             <ImageView
@@ -124,6 +136,7 @@
                 android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="430dp"
+                android:padding="2dp"
                 android:src="@drawable/card_back" />
         </FrameLayout>
 
