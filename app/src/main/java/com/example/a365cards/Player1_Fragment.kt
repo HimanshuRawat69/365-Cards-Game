@@ -24,23 +24,36 @@ import com.google.firebase.database.ValueEventListener
 
 class Player1_Fragment : Fragment() {
     lateinit var gameReference: DatabaseReference
-    var checkAllJoined=0
-    var cardListIndexP1= listOf<Int>()
-    var cardListIndexP2= listOf<Int>()
-    var cardListIndexP3= listOf<Int>()
-    var cardListIndexP4= listOf<Int>()
-    var imageViews= listOf<ImageView>()
+    var checkAllJoined = 0
+    var cardListIndexP1 = listOf<Int>()
+    var cardListIndexP2 = listOf<Int>()
+    var cardListIndexP3 = listOf<Int>()
+    var cardListIndexP4 = listOf<Int>()
+    var imageViews = listOf<ImageView>()
     private var selectedCard: ImageView? = null
-    var cardIndex=-1;
+    var cardIndex = -1
+    var cardIndex1 = -1
+    var cardIndex2 = -1
+    var cardIndex3 = -1
+    var cardIndex4 = -1
     var dropCardViewP1: ImageView? = null
     var dropCardViewP2: ImageView? = null
     var dropCardViewP3: ImageView? = null
     var dropCardViewP4: ImageView? = null
-    var myActivity: Game_Actvity? =null
+    var myActivity: Game_Actvity? = null
     var p2: ImageView? = null
     var p3: ImageView? = null
     var p4: ImageView? = null
-    var turnofPlayer=0;
+    var turnofPlayer = 0
+    var endofTurn = 0
+    var firstCardTurn = -1
+    var max = -1;
+    var redTeamCurrentHead = 0
+    var blueTeamCurrentHead = 0
+    var redTeamScoreView: TextView? = null
+    var blueTeamScoreView: TextView? = null
+    var playerTeam1Head = 0
+    var playerTeam2Head = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,34 +68,34 @@ class Player1_Fragment : Fragment() {
                             or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
 
-        val view=inflater.inflate(R.layout.fragment_player1_, container, false)
+        val view = inflater.inflate(R.layout.fragment_player1_, container, false)
 
-        p2=view.findViewById<ImageView>(R.id.imageView19)
-        p3=view.findViewById<ImageView>(R.id.imageView17)
-        p4=view.findViewById<ImageView>(R.id.imageView18)
-        imageViews= listOf(
-        view.findViewById<ImageView>(R.id.imageView7),
-        view.findViewById<ImageView>(R.id.imageView8),
-        view.findViewById<ImageView>(R.id.imageView6),
-        view.findViewById<ImageView>(R.id.imageView4),
-        view.findViewById<ImageView>(R.id.imageView5),
-        view.findViewById<ImageView>(R.id.imageView9),
-        view.findViewById<ImageView>(R.id.imageView10),
-        view.findViewById<ImageView>(R.id.imageView11),
-        view.findViewById<ImageView>(R.id.imageView12),
-        view.findViewById<ImageView>(R.id.imageView13),
-        view.findViewById<ImageView>(R.id.imageView14),
-        view.findViewById<ImageView>(R.id.imageView15),
-        view.findViewById<ImageView>(R.id.imageView16)
+        p2 = view.findViewById<ImageView>(R.id.imageView19)
+        p3 = view.findViewById<ImageView>(R.id.imageView17)
+        p4 = view.findViewById<ImageView>(R.id.imageView18)
+        imageViews = listOf(
+            view.findViewById<ImageView>(R.id.imageView7),
+            view.findViewById<ImageView>(R.id.imageView8),
+            view.findViewById<ImageView>(R.id.imageView6),
+            view.findViewById<ImageView>(R.id.imageView4),
+            view.findViewById<ImageView>(R.id.imageView5),
+            view.findViewById<ImageView>(R.id.imageView9),
+            view.findViewById<ImageView>(R.id.imageView10),
+            view.findViewById<ImageView>(R.id.imageView11),
+            view.findViewById<ImageView>(R.id.imageView12),
+            view.findViewById<ImageView>(R.id.imageView13),
+            view.findViewById<ImageView>(R.id.imageView14),
+            view.findViewById<ImageView>(R.id.imageView15),
+            view.findViewById<ImageView>(R.id.imageView16)
         )
-        val playView=view.findViewById<ImageView>(R.id.imageView20)
-        val blueTeamScoreView=view.findViewById<TextView>(R.id.textView6)
-        val redTeamScoreView=view.findViewById<TextView>(R.id.textView7)
-        val dropBtn=view.findViewById<Button>(R.id.btn_3d)
-        dropCardViewP1=view.findViewById<ImageView>(R.id.imageView25)
-        dropCardViewP2=view.findViewById<ImageView>(R.id.imageView23)
-        dropCardViewP3=view.findViewById<ImageView>(R.id.imageView24)
-        dropCardViewP4=view.findViewById<ImageView>(R.id.imageView22)
+        val playView = view.findViewById<ImageView>(R.id.imageView20)
+        blueTeamScoreView = view.findViewById<TextView>(R.id.textView6)
+        redTeamScoreView = view.findViewById<TextView>(R.id.textView7)
+        val dropBtn = view.findViewById<Button>(R.id.btn_3d)
+        dropCardViewP1 = view.findViewById<ImageView>(R.id.imageView25)
+        dropCardViewP2 = view.findViewById<ImageView>(R.id.imageView23)
+        dropCardViewP3 = view.findViewById<ImageView>(R.id.imageView24)
+        dropCardViewP4 = view.findViewById<ImageView>(R.id.imageView22)
 
 
         fun showToast(message: String) {
@@ -92,10 +105,10 @@ class Player1_Fragment : Fragment() {
 
 
         myActivity = activity as? Game_Actvity
-        val gameid=myActivity?.gameId
+        val gameid = myActivity?.gameId
         showToast("Game lobby created with code: $gameid")
-        val gameIdView=view.findViewById<TextView>(R.id.textView5)
-        gameIdView.text="Game ID: $gameid"
+        val gameIdView = view.findViewById<TextView>(R.id.textView5)
+        gameIdView.text = "Game ID: $gameid"
         gameReference = FirebaseDatabase.getInstance().reference.child("games").child(gameid!!)
 
 
@@ -103,24 +116,21 @@ class Player1_Fragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val value = dataSnapshot.getValue(Boolean::class.java)
-                    if(value==true)
-                    {
-                        checkAllJoined+=1
-                        if(checkAllJoined==3)
-                        {
-                            var cardListofList=randomCardNumber()
+                    if (value == true) {
+                        checkAllJoined += 1
+                        if (checkAllJoined == 3) {
+                            var cardListofList = randomCardNumber()
 
                             gameReference.child("Player1Cards").setValue(cardListofList.get(0))
                             gameReference.child("Player2Cards").setValue(cardListofList.get(1))
                             gameReference.child("Player3Cards").setValue(cardListofList.get(2))
                             gameReference.child("Player4Cards").setValue(cardListofList.get(3))
                             showToast("Click on Play Button!")
-                            playView.visibility=View.VISIBLE
+                            playView.visibility = View.VISIBLE
                         }
                         p2?.setImageResource(R.drawable.redboy)
                         showToast("Player 2 Joined")
-                    }
-                    else{
+                    } else {
                         p2?.setImageResource(R.drawable.redboynotactive)
                     }
                 }
@@ -135,24 +145,21 @@ class Player1_Fragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val value = dataSnapshot.getValue(Boolean::class.java)
-                    if(value==true)
-                    {
-                        checkAllJoined+=1
-                        if(checkAllJoined==3)
-                        {
-                            var cardListofList=randomCardNumber()
+                    if (value == true) {
+                        checkAllJoined += 1
+                        if (checkAllJoined == 3) {
+                            var cardListofList = randomCardNumber()
 
                             gameReference.child("Player1Cards").setValue(cardListofList.get(0))
                             gameReference.child("Player2Cards").setValue(cardListofList.get(1))
                             gameReference.child("Player3Cards").setValue(cardListofList.get(2))
                             gameReference.child("Player4Cards").setValue(cardListofList.get(3))
                             showToast("Click on Play Button!")
-                            playView.visibility=View.VISIBLE
+                            playView.visibility = View.VISIBLE
                         }
                         p3?.setImageResource(R.drawable.blueboy)
                         showToast("Player 3 Joined")
-                    }
-                    else{
+                    } else {
                         p3?.setImageResource(R.drawable.blueboynotactive)
                     }
                 }
@@ -168,25 +175,22 @@ class Player1_Fragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val value = dataSnapshot.getValue(Boolean::class.java)
-                    if(value==true)
-                    {
-                        checkAllJoined+=1
-                        if(checkAllJoined==3)
-                        {
-                            var cardListofList=randomCardNumber()
+                    if (value == true) {
+                        checkAllJoined += 1
+                        if (checkAllJoined == 3) {
+                            var cardListofList = randomCardNumber()
 
                             gameReference.child("Player1Cards").setValue(cardListofList.get(0))
                             gameReference.child("Player2Cards").setValue(cardListofList.get(1))
                             gameReference.child("Player3Cards").setValue(cardListofList.get(2))
                             gameReference.child("Player4Cards").setValue(cardListofList.get(3))
                             showToast("Click on Play Button!")
-                            playView.visibility=View.VISIBLE
+                            playView.visibility = View.VISIBLE
 
                         }
                         p4?.setImageResource(R.drawable.redboy)
                         showToast("Player 4 Joined")
-                    }
-                    else{
+                    } else {
                         p4?.setImageResource(R.drawable.redboynotactive)
                     }
                 }
@@ -198,24 +202,25 @@ class Player1_Fragment : Fragment() {
         })
 
 
-        playView.setOnClickListener{
+        playView.setOnClickListener {
 
-            playView.visibility=View.GONE
+            playView.visibility = View.GONE
 
 
             gameReference.child("Player1Cards").addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        cardListIndexP1 = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
-                        //var j=0;
-                        for (i in imageViews.indices) {
-                            imageViews[i].setImageResource(myActivity?.imageResources!![cardListIndexP1[i]])
-                        }
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    cardListIndexP1 =
+                        dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
+                    //var j=0;
+                    for (i in imageViews.indices) {
+                        imageViews[i].setImageResource(myActivity?.imageResources!![cardListIndexP1[i]])
                     }
+                }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w("Firebase", "Failed to read value.", databaseError.toException())
-                    }
-                })
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w("Firebase", "Failed to read value.", databaseError.toException())
+                }
+            })
             Final_Head_Player1and2_Screen().show(childFragmentManager, "inputDialog")
             Leader_Head_Screen().show(childFragmentManager, "inputDialog")
 
@@ -249,19 +254,20 @@ class Player1_Fragment : Fragment() {
                     TODO("Not yet implemented")
                 }
             })
-            turnofPlayer=1;
+            turnofPlayer = 1
+            endofTurn = 4
 
 
         }
 
         gameReference.child("Player1 Team Head").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val value = dataSnapshot.getValue(Int::class.java)
-                    if(value!=null)
-                    {
-                        blueTeamScoreView.text="Blue: 0/$value"
-                    }
+                val value = dataSnapshot.getValue(Int::class.java)
+                if (value != null) {
+                    playerTeam1Head = value
+                    blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$value"
                 }
+            }
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
@@ -270,9 +276,9 @@ class Player1_Fragment : Fragment() {
         gameReference.child("Player2 Team Head").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val value = dataSnapshot.getValue(Int::class.java)
-                if(value!=null)
-                {
-                    redTeamScoreView.text="Red: 0/$value"
+                if (value != null) {
+                    playerTeam2Head = value
+                    redTeamScoreView?.text = "Red: $redTeamCurrentHead/$value"
                 }
             }
 
@@ -288,76 +294,91 @@ class Player1_Fragment : Fragment() {
         }
 
         dropBtn.setOnClickListener {
-            if(turnofPlayer==1) {
+            if (turnofPlayer == 1) {
+
                 onDropBtnClick()
                 turnofPlayer++
                 glowAvatar(p2!!)
+            } else if (turnofPlayer == 0) {
+                Toast.makeText(requireContext(), "Game Not Start Yet!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Not your turn!", Toast.LENGTH_SHORT).show()
             }
-            else if(turnofPlayer==0)
-            {
-                Toast.makeText(requireContext(),"Game Not Start Yet!",Toast.LENGTH_SHORT).show()
-            }
-            else{
-                Toast.makeText(requireContext(),"Not your turn!",Toast.LENGTH_SHORT).show()
+            if (turnofPlayer == endofTurn) {
+                findHeadWinner()
             }
         }
 
-        gameReference.child("Player2 Card Index").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val value = dataSnapshot.getValue(Int::class.java)
-                if(value!=-1)
-                {
-                    dropCardViewP2?.setImageResource(myActivity?.imageResources!![cardListIndexP2[value!!]] )
+        gameReference.child("Player2 Card Index")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        cardIndex2 = value!!
+                        dropCardViewP2?.setImageResource(myActivity?.imageResources!![cardListIndexP2[value!!]])
+                    }
+                    if (turnofPlayer == endofTurn) {
+                        findHeadWinner()
+                    }
+                    else if (turnofPlayer != 0) {
+                        glowAvatar(p3!!)
+                        turnofPlayer++
+                    }
                 }
-                if(turnofPlayer!=0) {
-                    glowAvatar(p3!!)
-                    turnofPlayer++
-                }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
-        gameReference.child("Player3 Card Index").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val value = dataSnapshot.getValue(Int::class.java)
-                if(value!=-1)
-                {
-                    dropCardViewP3?.setImageResource(myActivity?.imageResources!![cardListIndexP3[value!!]] )
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
                 }
-                if(turnofPlayer!=0) {
-                    glowAvatar(p4!!)
-                    turnofPlayer++
+            })
+        gameReference.child("Player3 Card Index")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        cardIndex3 = value!!
+                        dropCardViewP3?.setImageResource(myActivity?.imageResources!![cardListIndexP3[value!!]])
+                    }
+                    if (turnofPlayer == endofTurn) {
+                        findHeadWinner()
+                    }
+                    else if (turnofPlayer != 0) {
+                        glowAvatar(p4!!)
+                        turnofPlayer++
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
-        gameReference.child("Player4 Card Index").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val value = dataSnapshot.getValue(Int::class.java)
-                if(value!=-1)
-                {
-                    dropCardViewP4?.setImageResource(myActivity?.imageResources!![cardListIndexP4[value!!]] )
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
                 }
-                if(turnofPlayer!=0) {
-                    resetGlow(p4!!)
-                    turnofPlayer = 1
-                }
-            }
+            })
+        gameReference.child("Player4 Card Index")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        cardIndex4 = value!!
+                        dropCardViewP4?.setImageResource(myActivity?.imageResources!![cardListIndexP4[value!!]])
+                    }
+                    if (turnofPlayer == endofTurn) {
+                        findHeadWinner()
+                    }
+                    else if (turnofPlayer != 0) {
+                        resetGlow(p4!!)
+                        turnofPlayer = 1
+                    }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
         return view
     }
-    private fun randomCardNumber():List<List<Int>>
-    {
+
+    private fun randomCardNumber(): List<List<Int>> {
         val numbers = (0..51).toList().shuffled()
         val group1 = numbers.subList(0, 13).sorted()
         val group2 = numbers.subList(13, 26).sorted()
@@ -381,21 +402,24 @@ class Player1_Fragment : Fragment() {
 
         card.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300).start()
     }
-    private fun onDropBtnClick()
-    {
+
+    private fun onDropBtnClick() {
         if (selectedCard != null) {
 
             selectedCard!!.setImageDrawable(null)
             selectedCard!!.setBackgroundResource(0)
-
+            if(endofTurn==4)
+            {
+                firstCardTurn=cardListIndexP1[cardIndex]
+            }
             gameReference.child("Player1 Card Index").setValue(cardIndex)
 
-            dropCardViewP1?.setImageResource(myActivity?.imageResources!![cardListIndexP1[cardIndex]] )
-
-            cardIndex=-1
+            dropCardViewP1?.setImageResource(myActivity?.imageResources!![cardListIndexP1[cardIndex]])
+            cardIndex1 = cardIndex
             selectedCard = null
         } else {
-            Toast.makeText(requireContext(), "Please select a card first", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select a card first", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -430,4 +454,325 @@ class Player1_Fragment : Fragment() {
     }
 
 
+    private fun findHeadWinner() {
+        if (cardIndex1 >= 0 && cardIndex2 >= 0 && cardIndex3 >= 0 && cardIndex4 >= 0) {
+            max = cardListIndexP1[cardIndex1]
+            if (firstCardTurn >= 0 && firstCardTurn <= 12) {
+                if (cardListIndexP2[cardIndex2] >= 0 && cardListIndexP2[cardIndex2] <= 12) {
+                    max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
+                }
+                if (cardListIndexP3[cardIndex3] >= 0 && cardListIndexP3[cardIndex3] <= 12) {
+                    max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
+                }
+                if (cardListIndexP4[cardIndex4] >= 0 && cardListIndexP4[cardIndex4] <= 12) {
+                    max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
+                }
+                if (max == cardListIndexP1[cardIndex1]) {
+                    turnofPlayer = 1
+                    firstCardTurn = 1
+                    endofTurn = 4
+                    blueTeamCurrentHead++
+                    blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                    Toast.makeText(requireContext(), "Player1 won 1 head!", Toast.LENGTH_SHORT)
+                        .show()
+                } else if (max == cardListIndexP2[cardIndex2]) {
+                    turnofPlayer = 2
+                    firstCardTurn = 2
+                    endofTurn = 1
+                    redTeamCurrentHead++
+                    redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                    Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                        .show()
+                } else if (max == cardListIndexP3[cardIndex3]) {
+                    turnofPlayer = 3
+                    firstCardTurn = 3
+                    endofTurn = 2
+                    blueTeamCurrentHead++
+                    blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                    Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                        .show()
+                } else if (max == cardListIndexP4[cardIndex4]) {
+                    turnofPlayer = 4
+                    firstCardTurn = 4
+                    endofTurn = 3
+                    redTeamCurrentHead++
+                    redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                    Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                dropCardViewP1?.setImageResource(R.drawable.drophere)
+                dropCardViewP2?.setImageResource(R.drawable.drophere)
+                dropCardViewP3?.setImageResource(R.drawable.drophere)
+                dropCardViewP4?.setImageResource(R.drawable.drophere)
+            } else if (firstCardTurn >= 13 && firstCardTurn <= 25) {
+                if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25 || cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25 || cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+                        max = cardListIndexP2[cardIndex2]
+                    }
+                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                        max = maxOf(cardListIndexP3[cardIndex3], max)
+                    }
+                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                        max = maxOf(cardListIndexP4[cardIndex4], max)
+                    }
+                    if (max == cardListIndexP2[cardIndex2]) {
+                        turnofPlayer = 2
+                        firstCardTurn = 2
+                        endofTurn = 1
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP3[cardIndex3]) {
+                        turnofPlayer = 3
+                        firstCardTurn = 3
+                        endofTurn = 2
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP4[cardIndex4]) {
+                        turnofPlayer = 4
+                        firstCardTurn = 4
+                        endofTurn = 3
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+
+                } else {
+                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+                        max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
+                    }
+                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                        max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
+                    }
+                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                        max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
+                    }
+                    if (max == cardListIndexP1[cardIndex1]) {
+                        turnofPlayer = 1
+                        firstCardTurn = 1
+                        endofTurn = 4
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player1 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP2[cardIndex2]) {
+                        turnofPlayer = 2
+                        firstCardTurn = 2
+                        endofTurn = 1
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP3[cardIndex3]) {
+                        turnofPlayer = 3
+                        firstCardTurn = 3
+                        endofTurn = 2
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP4[cardIndex4]) {
+                        turnofPlayer = 4
+                        firstCardTurn = 4
+                        endofTurn = 3
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                }
+            } else if (firstCardTurn >= 26 && firstCardTurn <= 38) {
+                if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25 || cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25 || cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+                        max = cardListIndexP2[cardIndex2]
+                    }
+                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                        max = maxOf(cardListIndexP3[cardIndex3], max)
+                    }
+                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                        max = maxOf(cardListIndexP4[cardIndex4], max)
+                    }
+                    if (max == cardListIndexP2[cardIndex2]) {
+                        turnofPlayer = 2
+                        firstCardTurn = 2
+                        endofTurn = 1
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP3[cardIndex3]) {
+                        turnofPlayer = 3
+                        firstCardTurn = 3
+                        endofTurn = 2
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP4[cardIndex4]) {
+                        turnofPlayer = 4
+                        firstCardTurn = 4
+                        endofTurn = 3
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+
+                } else {
+                    if (cardListIndexP2[cardIndex2] >= 26 && cardListIndexP2[cardIndex2] <= 38) {
+                        max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
+                    }
+                    if (cardListIndexP3[cardIndex3] >= 26 && cardListIndexP3[cardIndex3] <= 38) {
+                        max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
+                    }
+                    if (cardListIndexP4[cardIndex4] >= 26 && cardListIndexP4[cardIndex4] <= 38) {
+                        max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
+                    }
+                    if (max == cardListIndexP1[cardIndex1]) {
+                        turnofPlayer = 1
+                        firstCardTurn = 1
+                        endofTurn = 4
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player1 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP2[cardIndex2]) {
+                        turnofPlayer = 2
+                        firstCardTurn = 2
+                        endofTurn = 1
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP3[cardIndex3]) {
+                        turnofPlayer = 3
+                        firstCardTurn = 3
+                        endofTurn = 2
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP4[cardIndex4]) {
+                        turnofPlayer = 4
+                        firstCardTurn = 4
+                        endofTurn = 3
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                }
+            } else if (firstCardTurn >= 39 && firstCardTurn <= 51) {
+                if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25 || cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25 || cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+                        max = cardListIndexP2[cardIndex2]
+                    }
+                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                        max = maxOf(cardListIndexP3[cardIndex3], max)
+                    }
+                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                        max = maxOf(cardListIndexP4[cardIndex4], max)
+                    }
+                    if (max == cardListIndexP2[cardIndex2]) {
+                        turnofPlayer = 2
+                        firstCardTurn = 2
+                        endofTurn = 1
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP3[cardIndex3]) {
+                        turnofPlayer = 3
+                        firstCardTurn = 3
+                        endofTurn = 2
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP4[cardIndex4]) {
+                        turnofPlayer = 4
+                        firstCardTurn = 4
+                        endofTurn = 3
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+
+                } else {
+                    if (cardListIndexP2[cardIndex2] >= 39 && cardListIndexP2[cardIndex2] <= 51) {
+                        max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
+                    }
+                    if (cardListIndexP3[cardIndex3] >= 39 && cardListIndexP3[cardIndex3] <= 51) {
+                        max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
+                    }
+                    if (cardListIndexP4[cardIndex4] >= 39 && cardListIndexP4[cardIndex4] <= 51) {
+                        max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
+                    }
+                    if (max == cardListIndexP1[cardIndex1]) {
+                        turnofPlayer = 1
+                        firstCardTurn = 1
+                        endofTurn = 4
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player1 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP2[cardIndex2]) {
+                        turnofPlayer = 2
+                        firstCardTurn = 2
+                        endofTurn = 1
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player2 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP3[cardIndex3]) {
+                        turnofPlayer = 3
+                        firstCardTurn = 3
+                        endofTurn = 2
+                        blueTeamCurrentHead++
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        Toast.makeText(requireContext(), "Player3 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (max == cardListIndexP4[cardIndex4]) {
+                        turnofPlayer = 4
+                        firstCardTurn = 4
+                        endofTurn = 3
+                        redTeamCurrentHead++
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                }
+            }
+        }
+    }
 }
+

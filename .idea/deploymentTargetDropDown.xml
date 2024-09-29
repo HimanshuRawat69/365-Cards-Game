@@ -10,30 +10,38 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Varun sharma\.android\avd\Pixel_6_API_34.avd" />
+                  <value value="C:\Users\Varun sharma\.android\avd\Pixel_4a_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-09-27T18:03:09.849574800Z" />
-          <runningDeviceTargetsSelectedWithDialog>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="NVWKOJBYBIYD6HDA" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetsSelectedWithDialog>
+          <timeTargetWasSelectedWithDropDown value="2024-09-28T16:55:22.034220700Z" />
+          <multipleDevicesSelectedInDropDown value="true" />
           <targetsSelectedWithDialog>
             <Target>
               <type value="QUICK_BOOT_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Varun sharma\.android\avd\Pixel_6_Pro_API_34.avd" />
+                  <value value="C:\Users\Varun sharma\.android\avd\Pixel_3_XL_API_34.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\Varun sharma\.android\avd\Pixel_5_API_34.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\Varun sharma\.android\avd\Pixel_4a_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>

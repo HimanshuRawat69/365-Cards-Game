@@ -82,7 +82,7 @@ class Player4_Fragment : Fragment() {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
-        val myActivity = activity as? Game_Actvity
+        myActivity = activity as? Game_Actvity
         val gameid = myActivity?.gameId
         Toast.makeText(
             requireContext(),

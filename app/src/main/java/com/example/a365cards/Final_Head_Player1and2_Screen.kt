@@ -40,12 +40,12 @@ class Final_Head_Player1and2_Screen : DialogFragment() {
             if (inputText.isNotEmpty()) {
                 val input = inputText.toInt()
 
-                if (input in 1..13) {
+                if (input in 4..13) {
                     storeInputInFirebase(input)
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Please enter a number between 1 and 13",
+                        "Please enter a number between 4 and 13",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
