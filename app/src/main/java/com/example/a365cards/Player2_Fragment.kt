@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.delay
 
 
 class Player2_Fragment : Fragment() {
@@ -36,6 +37,14 @@ class Player2_Fragment : Fragment() {
     var p3: ImageView? = null
     var p4: ImageView? = null
     var turnofPlayer=0;
+    var redTeamCurrentHead = 0
+    var blueTeamCurrentHead = 0
+    var redTeamScoreView: TextView? = null
+    var blueTeamScoreView: TextView? = null
+    var playerTeam1Head = 0
+    var playerTeam2Head = 0
+    var firstCardTurn = -1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,7 +63,7 @@ class Player2_Fragment : Fragment() {
         p4=view.findViewById<ImageView>(R.id.imageView17)
         p1=view.findViewById<ImageView>(R.id.imageView18)
         val playView=view.findViewById<ImageView>(R.id.imageView20)
-        val imageViews= listOf(
+        imageViews= listOf(
             view.findViewById<ImageView>(R.id.imageView7),
             view.findViewById<ImageView>(R.id.imageView8),
             view.findViewById<ImageView>(R.id.imageView6),
@@ -227,7 +236,8 @@ class Player2_Fragment : Fragment() {
                 val value = dataSnapshot.getValue(Int::class.java)
                 if(value!=null)
                 {
-                    blueTeamScoreView.text="Blue: 0/$value"
+                    playerTeam1Head = value
+                    blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$value"
                 }
             }
 
@@ -240,7 +250,8 @@ class Player2_Fragment : Fragment() {
                 val value = dataSnapshot.getValue(Int::class.java)
                 if(value!=null)
                 {
-                    redTeamScoreView.text="Blue: 0/$value"
+                    playerTeam2Head = value
+                    redTeamScoreView?.text = "Red: $redTeamCurrentHead/$value"
                 }
             }
 
@@ -322,6 +333,71 @@ class Player2_Fragment : Fragment() {
                 TODO("Not yet implemented")
             }
         })
+
+        gameReference.child("BlueTeamCurrentHead")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        blueTeamCurrentHead=value!!
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+        gameReference.child("RedTeamCurrentHead")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        redTeamCurrentHead=value!!
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+        gameReference.child("PlayerTurn")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        turnofPlayer=value!!
+                        firstCardTurn=value!!
+                        if(turnofPlayer==1)
+                        {
+                            glowAvatar(p1!!)
+                        }
+                        else if(turnofPlayer==3)
+                        {
+                            glowAvatar(p3!!)
+                        }
+                        else if(turnofPlayer==4)
+                        {
+                            glowAvatar(p4!!)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
         return view
     }

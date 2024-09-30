@@ -36,6 +36,13 @@ class Player4_Fragment : Fragment() {
     var p2: ImageView? = null
     var p3: ImageView? = null
     var turnofPlayer=0
+    var redTeamCurrentHead = 0
+    var blueTeamCurrentHead = 0
+    var redTeamScoreView: TextView? = null
+    var blueTeamScoreView: TextView? = null
+    var playerTeam1Head = 0
+    var playerTeam2Head = 0
+    var firstCardTurn = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +62,7 @@ class Player4_Fragment : Fragment() {
         p2=view.findViewById<ImageView>(R.id.imageView17)
         p3=view.findViewById<ImageView>(R.id.imageView18)
         val playView=view.findViewById<ImageView>(R.id.imageView20)
-        val imageViews= listOf(
+        imageViews= listOf(
             view.findViewById<ImageView>(R.id.imageView7),
             view.findViewById<ImageView>(R.id.imageView8),
             view.findViewById<ImageView>(R.id.imageView6),
@@ -229,7 +236,8 @@ class Player4_Fragment : Fragment() {
                 val value = dataSnapshot.getValue(Int::class.java)
                 if(value!=null)
                 {
-                    blueTeamScoreView.text="Blue: 0/$value"
+                    playerTeam1Head = value
+                    blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$value"
                 }
             }
 
@@ -242,7 +250,8 @@ class Player4_Fragment : Fragment() {
                 val value = dataSnapshot.getValue(Int::class.java)
                 if(value!=null)
                 {
-                    redTeamScoreView.text="Blue: 0/$value"
+                    playerTeam2Head = value
+                    redTeamScoreView?.text = "Red: $redTeamCurrentHead/$value"
                 }
             }
 
@@ -324,6 +333,71 @@ class Player4_Fragment : Fragment() {
                 TODO("Not yet implemented")
             }
         })
+
+        gameReference.child("BlueTeamCurrentHead")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        blueTeamCurrentHead=value!!
+                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+        gameReference.child("RedTeamCurrentHead")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        redTeamCurrentHead=value!!
+                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+        gameReference.child("PlayerTurn")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value = dataSnapshot.getValue(Int::class.java)
+                    if (value != -1) {
+                        turnofPlayer=value!!
+                        firstCardTurn=value!!
+                        if(turnofPlayer==1)
+                        {
+                            glowAvatar(p1!!)
+                        }
+                        else if(turnofPlayer==2)
+                        {
+                            glowAvatar(p2!!)
+                        }
+                        else if(turnofPlayer==3)
+                        {
+                            glowAvatar(p3!!)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
         return view
     }

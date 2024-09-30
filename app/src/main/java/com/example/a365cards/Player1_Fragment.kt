@@ -295,10 +295,16 @@ class Player1_Fragment : Fragment() {
 
         dropBtn.setOnClickListener {
             if (turnofPlayer == 1) {
-
-                onDropBtnClick()
-                turnofPlayer++
-                glowAvatar(p2!!)
+                if(firstCardTurn==1) {
+                    onDropBtnClick()
+                    turnofPlayer++
+                    glowAvatar(p2!!)
+                }
+                else{
+                    onDropBtnClick()
+                    turnofPlayer++
+                    glowAvatar(p2!!)
+                }
             } else if (turnofPlayer == 0) {
                 Toast.makeText(requireContext(), "Game Not Start Yet!", Toast.LENGTH_SHORT).show()
             } else {
@@ -457,14 +463,14 @@ class Player1_Fragment : Fragment() {
     private fun findHeadWinner() {
         if (cardIndex1 >= 0 && cardIndex2 >= 0 && cardIndex3 >= 0 && cardIndex4 >= 0) {
             max = cardListIndexP1[cardIndex1]
-            if (firstCardTurn >= 0 && firstCardTurn <= 12) {
-                if (cardListIndexP2[cardIndex2] >= 0 && cardListIndexP2[cardIndex2] <= 12) {
+            if (firstCardTurn in 0..12) {
+                if (cardListIndexP2[cardIndex2] in 0..12) {
                     max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
                 }
-                if (cardListIndexP3[cardIndex3] >= 0 && cardListIndexP3[cardIndex3] <= 12) {
+                if (cardListIndexP3[cardIndex3] in 0..12) {
                     max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
                 }
-                if (cardListIndexP4[cardIndex4] >= 0 && cardListIndexP4[cardIndex4] <= 12) {
+                if (cardListIndexP4[cardIndex4] in 0..12) {
                     max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
                 }
                 if (max == cardListIndexP1[cardIndex1]) {
@@ -504,15 +510,15 @@ class Player1_Fragment : Fragment() {
                 dropCardViewP2?.setImageResource(R.drawable.drophere)
                 dropCardViewP3?.setImageResource(R.drawable.drophere)
                 dropCardViewP4?.setImageResource(R.drawable.drophere)
-            } else if (firstCardTurn >= 13 && firstCardTurn <= 25) {
-                if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25 || cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25 || cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
-                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+            } else if (firstCardTurn in 13..25) {
+                if (cardListIndexP2[cardIndex2] in 0..12 || cardListIndexP3[cardIndex3] in 0..12 || cardListIndexP4[cardIndex4] in 0..12) {
+                    if (cardListIndexP2[cardIndex2] in 0..12) {
                         max = cardListIndexP2[cardIndex2]
                     }
-                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                    if (cardListIndexP3[cardIndex3] in 0..12) {
                         max = maxOf(cardListIndexP3[cardIndex3], max)
                     }
-                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP4[cardIndex4] in 0..12) {
                         max = maxOf(cardListIndexP4[cardIndex4], max)
                     }
                     if (max == cardListIndexP2[cardIndex2]) {
@@ -546,13 +552,13 @@ class Player1_Fragment : Fragment() {
                     dropCardViewP4?.setImageResource(R.drawable.drophere)
 
                 } else {
-                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+                    if (cardListIndexP2[cardIndex2] in 13..25) {
                         max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
                     }
-                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                    if (cardListIndexP3[cardIndex3] in 13..25) {
                         max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
                     }
-                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP4[cardIndex4] in 13..25) {
                         max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
                     }
                     if (max == cardListIndexP1[cardIndex1]) {
@@ -594,14 +600,14 @@ class Player1_Fragment : Fragment() {
                     dropCardViewP4?.setImageResource(R.drawable.drophere)
                 }
             } else if (firstCardTurn >= 26 && firstCardTurn <= 38) {
-                if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25 || cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25 || cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
-                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+                if (cardListIndexP2[cardIndex2] in 0..12 || cardListIndexP3[cardIndex3] in 0..12 || cardListIndexP4[cardIndex4] in 0..12) {
+                    if (cardListIndexP2[cardIndex2] in 0..12) {
                         max = cardListIndexP2[cardIndex2]
                     }
-                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                    if (cardListIndexP3[cardIndex3] in 0..12) {
                         max = maxOf(cardListIndexP3[cardIndex3], max)
                     }
-                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP4[cardIndex4] in 0..12) {
                         max = maxOf(cardListIndexP4[cardIndex4], max)
                     }
                     if (max == cardListIndexP2[cardIndex2]) {
@@ -635,13 +641,13 @@ class Player1_Fragment : Fragment() {
                     dropCardViewP4?.setImageResource(R.drawable.drophere)
 
                 } else {
-                    if (cardListIndexP2[cardIndex2] >= 26 && cardListIndexP2[cardIndex2] <= 38) {
+                    if (cardListIndexP2[cardIndex2] in 26..38) {
                         max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
                     }
-                    if (cardListIndexP3[cardIndex3] >= 26 && cardListIndexP3[cardIndex3] <= 38) {
+                    if (cardListIndexP3[cardIndex3] in 26..38) {
                         max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
                     }
-                    if (cardListIndexP4[cardIndex4] >= 26 && cardListIndexP4[cardIndex4] <= 38) {
+                    if (cardListIndexP4[cardIndex4] in 26..38) {
                         max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
                     }
                     if (max == cardListIndexP1[cardIndex1]) {
@@ -682,15 +688,15 @@ class Player1_Fragment : Fragment() {
                     dropCardViewP3?.setImageResource(R.drawable.drophere)
                     dropCardViewP4?.setImageResource(R.drawable.drophere)
                 }
-            } else if (firstCardTurn >= 39 && firstCardTurn <= 51) {
-                if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25 || cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25 || cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
-                    if (cardListIndexP2[cardIndex2] >= 13 && cardListIndexP2[cardIndex2] <= 25) {
+            } else if (firstCardTurn in 39..51) {
+                if (cardListIndexP2[cardIndex2] in 0..12 || cardListIndexP3[cardIndex3] in 0..12 || cardListIndexP4[cardIndex4] in 0..12) {
+                    if (cardListIndexP2[cardIndex2] in 0..12) {
                         max = cardListIndexP2[cardIndex2]
                     }
-                    if (cardListIndexP3[cardIndex3] >= 13 && cardListIndexP3[cardIndex3] <= 25) {
+                    if (cardListIndexP3[cardIndex3] in 0..12) {
                         max = maxOf(cardListIndexP3[cardIndex3], max)
                     }
-                    if (cardListIndexP4[cardIndex4] >= 13 && cardListIndexP4[cardIndex4] <= 25) {
+                    if (cardListIndexP4[cardIndex4] in 0..12) {
                         max = maxOf(cardListIndexP4[cardIndex4], max)
                     }
                     if (max == cardListIndexP2[cardIndex2]) {
@@ -724,13 +730,13 @@ class Player1_Fragment : Fragment() {
                     dropCardViewP4?.setImageResource(R.drawable.drophere)
 
                 } else {
-                    if (cardListIndexP2[cardIndex2] >= 39 && cardListIndexP2[cardIndex2] <= 51) {
+                    if (cardListIndexP2[cardIndex2] in 39..51) {
                         max = maxOf(cardListIndexP2[cardIndex2], cardListIndexP1[cardIndex1])
                     }
-                    if (cardListIndexP3[cardIndex3] >= 39 && cardListIndexP3[cardIndex3] <= 51) {
+                    if (cardListIndexP3[cardIndex3] in 39..51) {
                         max = maxOf(cardListIndexP3[cardIndex3], cardListIndexP1[cardIndex1], max)
                     }
-                    if (cardListIndexP4[cardIndex4] >= 39 && cardListIndexP4[cardIndex4] <= 51) {
+                    if (cardListIndexP4[cardIndex4] in 39..51) {
                         max = maxOf(cardListIndexP4[cardIndex4], cardListIndexP1[cardIndex1], max)
                     }
                     if (max == cardListIndexP1[cardIndex1]) {
@@ -773,6 +779,21 @@ class Player1_Fragment : Fragment() {
                 }
             }
         }
+        if(turnofPlayer==2)
+        {
+            glowAvatar(p2!!)
+        }
+        else if(turnofPlayer==3)
+        {
+            glowAvatar(p3!!)
+        }
+        else if(turnofPlayer==4)
+        {
+            glowAvatar(p4!!)
+        }
+        gameReference.child("BlueTeamCurrentHead").setValue(blueTeamCurrentHead)
+        gameReference.child("RedTeamCurrentHead").setValue(redTeamCurrentHead)
+        gameReference.child("PlayerTurn").setValue(turnofPlayer)
     }
 }
 

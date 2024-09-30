@@ -116,7 +116,9 @@ class MainActivity : AppCompatActivity() {
             "Player2 Card Index" to -1,
             "Player3 Card Index" to -1,
             "Player4 Card Index" to -1,
-            "Player Turn" to 1
+            "PlayerTurn" to 1,
+            "BlueTeamCurrentHead" to 0,
+            "RedTeamCurrentHead" to 0
         )
 
         Reference.setValue(game)
