@@ -9,6 +9,7 @@ import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
@@ -21,6 +22,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class Player1_Fragment : Fragment() {
     lateinit var gameReference: DatabaseReference
@@ -44,16 +49,24 @@ class Player1_Fragment : Fragment() {
     var p2: ImageView? = null
     var p3: ImageView? = null
     var p4: ImageView? = null
-    var turnofPlayer = 0
-    var endofTurn = 0
+    var turnofPlayer = 1
+    var endofTurn = 4
     var firstCardTurn = -1
     var max = -1;
     var redTeamCurrentHead = 0
     var blueTeamCurrentHead = 0
     var redTeamScoreView: TextView? = null
     var blueTeamScoreView: TextView? = null
+    var blueTeamTotalScoreView: TextView? = null
+    var redTeamTotalScoreView: TextView? = null
+    var blueTeamTotalScore=0
+    var redTeamTotalScore=0
     var playerTeam1Head = 0
     var playerTeam2Head = 0
+    var totalTurn=0
+    var playView: ImageView? = null
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,9 +101,11 @@ class Player1_Fragment : Fragment() {
             view.findViewById<ImageView>(R.id.imageView15),
             view.findViewById<ImageView>(R.id.imageView16)
         )
-        val playView = view.findViewById<ImageView>(R.id.imageView20)
+        playView = view.findViewById<ImageView>(R.id.imageView20)
         blueTeamScoreView = view.findViewById<TextView>(R.id.textView6)
         redTeamScoreView = view.findViewById<TextView>(R.id.textView7)
+        blueTeamTotalScoreView = view.findViewById<TextView>(R.id.textView8)
+        redTeamTotalScoreView = view.findViewById<TextView>(R.id.textView9)
         val dropBtn = view.findViewById<Button>(R.id.btn_3d)
         dropCardViewP1 = view.findViewById<ImageView>(R.id.imageView25)
         dropCardViewP2 = view.findViewById<ImageView>(R.id.imageView23)
@@ -126,7 +141,7 @@ class Player1_Fragment : Fragment() {
                             gameReference.child("Player3Cards").setValue(cardListofList.get(2))
                             gameReference.child("Player4Cards").setValue(cardListofList.get(3))
                             showToast("Click on Play Button!")
-                            playView.visibility = View.VISIBLE
+                            playView?.visibility = View.VISIBLE
                         }
                         p2?.setImageResource(R.drawable.redboy)
                         showToast("Player 2 Joined")
@@ -155,7 +170,7 @@ class Player1_Fragment : Fragment() {
                             gameReference.child("Player3Cards").setValue(cardListofList.get(2))
                             gameReference.child("Player4Cards").setValue(cardListofList.get(3))
                             showToast("Click on Play Button!")
-                            playView.visibility = View.VISIBLE
+                            playView?.visibility = View.VISIBLE
                         }
                         p3?.setImageResource(R.drawable.blueboy)
                         showToast("Player 3 Joined")
@@ -185,7 +200,7 @@ class Player1_Fragment : Fragment() {
                             gameReference.child("Player3Cards").setValue(cardListofList.get(2))
                             gameReference.child("Player4Cards").setValue(cardListofList.get(3))
                             showToast("Click on Play Button!")
-                            playView.visibility = View.VISIBLE
+                            playView?.visibility = View.VISIBLE
 
                         }
                         p4?.setImageResource(R.drawable.redboy)
@@ -202,9 +217,9 @@ class Player1_Fragment : Fragment() {
         })
 
 
-        playView.setOnClickListener {
+        playView?.setOnClickListener {
 
-            playView.visibility = View.GONE
+            playView?.visibility = View.GONE
 
 
             gameReference.child("Player1Cards").addValueEventListener(object : ValueEventListener {
@@ -295,16 +310,10 @@ class Player1_Fragment : Fragment() {
 
         dropBtn.setOnClickListener {
             if (turnofPlayer == 1) {
-                if(firstCardTurn==1) {
-                    onDropBtnClick()
-                    turnofPlayer++
-                    glowAvatar(p2!!)
-                }
-                else{
-                    onDropBtnClick()
-                    turnofPlayer++
-                    glowAvatar(p2!!)
-                }
+                totalTurn++;
+                onDropBtnClick()
+                turnofPlayer++
+                glowAvatar(p2!!)
             } else if (turnofPlayer == 0) {
                 Toast.makeText(requireContext(), "Game Not Start Yet!", Toast.LENGTH_SHORT).show()
             } else {
@@ -413,6 +422,7 @@ class Player1_Fragment : Fragment() {
         if (selectedCard != null) {
 
             selectedCard!!.setImageDrawable(null)
+            selectedCard!!.isClickable=false
             selectedCard!!.setBackgroundResource(0)
             if(endofTurn==4)
             {
@@ -506,10 +516,13 @@ class Player1_Fragment : Fragment() {
                     Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                         .show()
                 }
-                dropCardViewP1?.setImageResource(R.drawable.drophere)
-                dropCardViewP2?.setImageResource(R.drawable.drophere)
-                dropCardViewP3?.setImageResource(R.drawable.drophere)
-                dropCardViewP4?.setImageResource(R.drawable.drophere)
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+                    dropCardViewP1?.setImageResource(R.drawable.drophere)
+                    dropCardViewP2?.setImageResource(R.drawable.drophere)
+                    dropCardViewP3?.setImageResource(R.drawable.drophere)
+                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                }
             } else if (firstCardTurn in 13..25) {
                 if (cardListIndexP2[cardIndex2] in 0..12 || cardListIndexP3[cardIndex3] in 0..12 || cardListIndexP4[cardIndex4] in 0..12) {
                     if (cardListIndexP2[cardIndex2] in 0..12) {
@@ -546,10 +559,13 @@ class Player1_Fragment : Fragment() {
                         Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    dropCardViewP1?.setImageResource(R.drawable.drophere)
-                    dropCardViewP2?.setImageResource(R.drawable.drophere)
-                    dropCardViewP3?.setImageResource(R.drawable.drophere)
-                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
 
                 } else {
                     if (cardListIndexP2[cardIndex2] in 13..25) {
@@ -594,10 +610,13 @@ class Player1_Fragment : Fragment() {
                         Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    dropCardViewP1?.setImageResource(R.drawable.drophere)
-                    dropCardViewP2?.setImageResource(R.drawable.drophere)
-                    dropCardViewP3?.setImageResource(R.drawable.drophere)
-                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
                 }
             } else if (firstCardTurn >= 26 && firstCardTurn <= 38) {
                 if (cardListIndexP2[cardIndex2] in 0..12 || cardListIndexP3[cardIndex3] in 0..12 || cardListIndexP4[cardIndex4] in 0..12) {
@@ -635,10 +654,13 @@ class Player1_Fragment : Fragment() {
                         Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    dropCardViewP1?.setImageResource(R.drawable.drophere)
-                    dropCardViewP2?.setImageResource(R.drawable.drophere)
-                    dropCardViewP3?.setImageResource(R.drawable.drophere)
-                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
 
                 } else {
                     if (cardListIndexP2[cardIndex2] in 26..38) {
@@ -683,10 +705,13 @@ class Player1_Fragment : Fragment() {
                         Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    dropCardViewP1?.setImageResource(R.drawable.drophere)
-                    dropCardViewP2?.setImageResource(R.drawable.drophere)
-                    dropCardViewP3?.setImageResource(R.drawable.drophere)
-                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
                 }
             } else if (firstCardTurn in 39..51) {
                 if (cardListIndexP2[cardIndex2] in 0..12 || cardListIndexP3[cardIndex3] in 0..12 || cardListIndexP4[cardIndex4] in 0..12) {
@@ -724,10 +749,13 @@ class Player1_Fragment : Fragment() {
                         Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    dropCardViewP1?.setImageResource(R.drawable.drophere)
-                    dropCardViewP2?.setImageResource(R.drawable.drophere)
-                    dropCardViewP3?.setImageResource(R.drawable.drophere)
-                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
 
                 } else {
                     if (cardListIndexP2[cardIndex2] in 39..51) {
@@ -772,10 +800,13 @@ class Player1_Fragment : Fragment() {
                         Toast.makeText(requireContext(), "Player4 won 1 head!", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    dropCardViewP1?.setImageResource(R.drawable.drophere)
-                    dropCardViewP2?.setImageResource(R.drawable.drophere)
-                    dropCardViewP3?.setImageResource(R.drawable.drophere)
-                    dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000)
+                        dropCardViewP1?.setImageResource(R.drawable.drophere)
+                        dropCardViewP2?.setImageResource(R.drawable.drophere)
+                        dropCardViewP3?.setImageResource(R.drawable.drophere)
+                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                    }
                 }
             }
         }
@@ -794,6 +825,36 @@ class Player1_Fragment : Fragment() {
         gameReference.child("BlueTeamCurrentHead").setValue(blueTeamCurrentHead)
         gameReference.child("RedTeamCurrentHead").setValue(redTeamCurrentHead)
         gameReference.child("PlayerTurn").setValue(turnofPlayer)
+        if(totalTurn==13)
+        {
+            CardTurnComplete()
+        }
+    }
+    private fun CardTurnComplete()
+    {
+        var i=0
+        for(i in 0..12)
+        {
+            imageViews[i].isClickable=true
+            imageViews[i].setImageResource(R.drawable.card_back)
+        }
+        if(blueTeamCurrentHead/playerTeam1Head>=0)
+        {
+            blueTeamTotalScore+=(blueTeamCurrentHead*10+blueTeamCurrentHead%playerTeam1Head)
+        }
+        if(redTeamCurrentHead/playerTeam2Head>=0)
+        {
+            redTeamTotalScore+=(redTeamCurrentHead*10+redTeamCurrentHead%playerTeam2Head)
+        }
+        redTeamCurrentHead=0
+        blueTeamCurrentHead=0
+        playerTeam1Head=0
+        playerTeam2Head=0
+        totalTurn=0
+        playView?.visibility=VISIBLE
+        blueTeamTotalScoreView?.text="Blue's Score:$blueTeamTotalScore"
+        redTeamTotalScoreView?.text="Red's Score:$redTeamTotalScore"
+
     }
 }
 

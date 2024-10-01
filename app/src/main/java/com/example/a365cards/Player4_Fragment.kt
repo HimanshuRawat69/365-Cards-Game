@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
@@ -15,6 +16,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class Player4_Fragment : Fragment() {
@@ -35,14 +40,20 @@ class Player4_Fragment : Fragment() {
     var p1: ImageView? = null
     var p2: ImageView? = null
     var p3: ImageView? = null
-    var turnofPlayer=0
+    var turnofPlayer=1
     var redTeamCurrentHead = 0
     var blueTeamCurrentHead = 0
     var redTeamScoreView: TextView? = null
     var blueTeamScoreView: TextView? = null
+    var blueTeamTotalScoreView: TextView? = null
+    var redTeamTotalScoreView: TextView? = null
+    var blueTeamTotalScore=0
+    var redTeamTotalScore=0
     var playerTeam1Head = 0
     var playerTeam2Head = 0
     var firstCardTurn = -1
+    var totalTurn=0
+    var playView: ImageView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +72,7 @@ class Player4_Fragment : Fragment() {
         p1=view.findViewById<ImageView>(R.id.imageView19)
         p2=view.findViewById<ImageView>(R.id.imageView17)
         p3=view.findViewById<ImageView>(R.id.imageView18)
-        val playView=view.findViewById<ImageView>(R.id.imageView20)
+        playView=view.findViewById<ImageView>(R.id.imageView20)
         imageViews= listOf(
             view.findViewById<ImageView>(R.id.imageView7),
             view.findViewById<ImageView>(R.id.imageView8),
@@ -77,8 +88,10 @@ class Player4_Fragment : Fragment() {
             view.findViewById<ImageView>(R.id.imageView15),
             view.findViewById<ImageView>(R.id.imageView16)
         )
-        val blueTeamScoreView=view.findViewById<TextView>(R.id.textView6)
-        val redTeamScoreView=view.findViewById<TextView>(R.id.textView7)
+        blueTeamScoreView=view.findViewById<TextView>(R.id.textView6)
+        redTeamScoreView=view.findViewById<TextView>(R.id.textView7)
+        blueTeamTotalScoreView = view.findViewById<TextView>(R.id.textView8)
+        redTeamTotalScoreView = view.findViewById<TextView>(R.id.textView9)
         val dropBtn=view.findViewById<Button>(R.id.btn_3d)
         dropCardViewP4=view.findViewById<ImageView>(R.id.imageView25)
         dropCardViewP1=view.findViewById<ImageView>(R.id.imageView23)
@@ -111,7 +124,7 @@ class Player4_Fragment : Fragment() {
                         if(checkAllJoined==3)
                         {
                             showToast("Click on Play Button!")
-                            playView.visibility=View.VISIBLE
+                            playView?.visibility=View.VISIBLE
                         }
                         p1?.setImageResource(R.drawable.blueboy)
                     }
@@ -136,7 +149,7 @@ class Player4_Fragment : Fragment() {
                         if(checkAllJoined==3)
                         {
                             showToast("Click on Play Button!")
-                            playView.visibility=View.VISIBLE
+                            playView?.visibility=View.VISIBLE
                         }
                         p2?.setImageResource(R.drawable.redboy)
                         showToast("Player 2 Joined")
@@ -163,7 +176,7 @@ class Player4_Fragment : Fragment() {
                         if(checkAllJoined==3)
                         {
                             showToast("Click on Play Button!")
-                            playView.visibility=View.VISIBLE
+                            playView?.visibility=View.VISIBLE
                         }
                         p3?.setImageResource(R.drawable.blueboy)
                         showToast("Player 3 Joined")
@@ -179,8 +192,8 @@ class Player4_Fragment : Fragment() {
             }
         })
 
-        playView.setOnClickListener{
-            playView.visibility=View.GONE
+        playView?.setOnClickListener{
+            playView?.visibility=View.GONE
             gameReference.child("Player4Cards").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     cardListIndexP4 = dataSnapshot.children.mapNotNull { it.getValue(Int::class.java) }
@@ -226,7 +239,6 @@ class Player4_Fragment : Fragment() {
                     TODO("Not yet implemented")
                 }
             })
-            turnofPlayer=1
             glowAvatar(p1!!)
 
         }
@@ -269,6 +281,7 @@ class Player4_Fragment : Fragment() {
 
         dropBtn.setOnClickListener {
             if(turnofPlayer==4) {
+                totalTurn++
                 onDropBtnClick()
                 turnofPlayer=1
                 glowAvatar(p1!!)
@@ -339,12 +352,15 @@ class Player4_Fragment : Fragment() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val value = dataSnapshot.getValue(Int::class.java)
                     if (value != -1) {
-                        blueTeamCurrentHead=value!!
-                        blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
-                        dropCardViewP1?.setImageResource(R.drawable.drophere)
-                        dropCardViewP2?.setImageResource(R.drawable.drophere)
-                        dropCardViewP3?.setImageResource(R.drawable.drophere)
-                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(2000)
+                            blueTeamCurrentHead = value!!
+                            blueTeamScoreView?.text = "Blue: $blueTeamCurrentHead/$playerTeam1Head"
+                            dropCardViewP1?.setImageResource(R.drawable.drophere)
+                            dropCardViewP2?.setImageResource(R.drawable.drophere)
+                            dropCardViewP3?.setImageResource(R.drawable.drophere)
+                            dropCardViewP4?.setImageResource(R.drawable.drophere)
+                        }
                     }
                 }
 
@@ -358,12 +374,15 @@ class Player4_Fragment : Fragment() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val value = dataSnapshot.getValue(Int::class.java)
                     if (value != -1) {
-                        redTeamCurrentHead=value!!
-                        redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
-                        dropCardViewP1?.setImageResource(R.drawable.drophere)
-                        dropCardViewP2?.setImageResource(R.drawable.drophere)
-                        dropCardViewP3?.setImageResource(R.drawable.drophere)
-                        dropCardViewP4?.setImageResource(R.drawable.drophere)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(2000)
+                            redTeamCurrentHead = value!!
+                            redTeamScoreView?.text = "Red: $redTeamCurrentHead/$playerTeam2Head"
+                            dropCardViewP1?.setImageResource(R.drawable.drophere)
+                            dropCardViewP2?.setImageResource(R.drawable.drophere)
+                            dropCardViewP3?.setImageResource(R.drawable.drophere)
+                            dropCardViewP4?.setImageResource(R.drawable.drophere)
+                        }
                     }
                 }
 
@@ -391,6 +410,10 @@ class Player4_Fragment : Fragment() {
                         {
                             glowAvatar(p3!!)
                         }
+                    }
+                    if(totalTurn==13)
+                    {
+                        CardTurnComplete()
                     }
                 }
 
@@ -425,6 +448,7 @@ class Player4_Fragment : Fragment() {
         if (selectedCard != null) {
 
             selectedCard!!.setImageDrawable(null)
+            selectedCard!!.isClickable=false
             selectedCard!!.setBackgroundResource(0)
 
             gameReference.child("Player4 Card Index").setValue(cardIndex)
@@ -448,5 +472,39 @@ class Player4_Fragment : Fragment() {
 
     private fun resetGlow(avatar: ImageView) {
         avatar.setBackgroundResource(0)
+    }
+
+    private fun CardTurnComplete()
+    {
+//        if(blueTeamTotalScore>=365)
+//        {
+//
+//        }
+//        else if(redTeamTotalScore>=365)
+//        {
+//
+//        }
+        var i=0
+        for(i in 0..12)
+        {
+            imageViews[i].isClickable=true
+            imageViews[i].setImageResource(R.drawable.card_back)
+        }
+        if(blueTeamCurrentHead/playerTeam1Head>=0)
+        {
+            blueTeamTotalScore+=(blueTeamCurrentHead*10+blueTeamCurrentHead%playerTeam1Head)
+        }
+        if(redTeamCurrentHead/playerTeam2Head>=0)
+        {
+            redTeamTotalScore+=(redTeamCurrentHead*10+redTeamCurrentHead%playerTeam2Head)
+        }
+        redTeamCurrentHead=0
+        blueTeamCurrentHead=0
+        playerTeam1Head=0
+        playerTeam2Head=0
+        totalTurn=0
+        playView?.visibility= VISIBLE
+        blueTeamTotalScoreView?.text="Blue's Score:$blueTeamTotalScore"
+        redTeamTotalScoreView?.text="Red's Score:$redTeamTotalScore"
     }
 }
