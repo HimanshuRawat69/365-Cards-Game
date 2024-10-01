@@ -27,5 +27,5 @@ A multiplayer card game where players can join lobbies, receive cards, and play 
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/cards-game-365.git
-cd cards-game-365
+git clone https://github.com/HimanshuRawat69/365-Cards-Game.git
+cd 365-Cards-Game
