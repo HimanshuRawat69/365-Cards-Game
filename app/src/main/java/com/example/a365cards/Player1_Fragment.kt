@@ -269,9 +269,6 @@ class Player1_Fragment : Fragment() {
                     TODO("Not yet implemented")
                 }
             })
-            turnofPlayer = 1
-            endofTurn = 4
-
 
         }
 
@@ -373,15 +370,14 @@ class Player1_Fragment : Fragment() {
                     if (value != -1) {
                         cardIndex4 = value!!
                         dropCardViewP4?.setImageResource(myActivity?.imageResources!![cardListIndexP4[value!!]])
+                        if (turnofPlayer == endofTurn) {
+                            findHeadWinner()
+                        }
+                        else {
+                            resetGlow(p4!!)
+                            turnofPlayer = 1
+                        }
                     }
-                    if (turnofPlayer == endofTurn) {
-                        findHeadWinner()
-                    }
-                    else if (turnofPlayer != 0) {
-                        resetGlow(p4!!)
-                        turnofPlayer = 1
-                    }
-
 
                 }
 
